@@ -1,7 +1,13 @@
 song1 = "";
 song2 = "";
-leftWrist = "";
-rightWrist = "";
+song1_status = "";
+song2_status = ""; 
+leftWristX = 0;
+leftWristY = 0;
+rightWristX = 0;
+rightWristY = 0;
+scoreLeftWrist = 0;
+scoreRightWrist = 0;
 
 function preload()
 {
@@ -32,13 +38,17 @@ function gotPoses(results)
     {
         console.log(results);
 
-        leftWristX = results[0].pose.leftWrist;
-        leftWristY = results[0].pose.leftWrist;
-        console.log("leftWrist = " + leftWrist + " leftWrist = " + leftWrist);
+        scoreRightWrist = results[0].pose.keypoints[10].score;
+        scoreLeftWrist = results[0].pose.keypoints[9].score;
+        console.log("scoreRightWrist = " + scoreRightWrist + "scoreLeftWrist = " + scoreLeftWrist);
 
-        rightWristX = results[0].pose.rightWrist;
-        rightWristY = results[0].pose.rightWrist;
-        console.log("rightWrist = " + rightWrist + "rightWrist = " + rightWrist);
+        leftWristX = results[0].pose.leftWrist.x;
+        leftWristY = results[0].pose.leftWrist.y;
+        console.log("leftWristX = " + leftWristX + " leftWristy = " + leftWristY);
+
+        rightWristX = results[0].pose.rightWrist.x;
+        rightWristY = results[0].pose.rightWrist.y;
+        console.log("rightWristX = " + rightWristX + "rightWristY = " + rightWristY);
     }
 }
 
@@ -46,7 +56,20 @@ function draw()
 {
     image(video, 0, 0, 600, 500);
 
-    fill("#FF7F7F")
-    stroke("#90ee90")
+    song1_status = song1.isPlaying();
+    song2_status = song2.isPlaying();
 
+    fill("#FF7F7F");
+    stroke("#90ee90");
+
+    if(scoreRightWrist < 0.2)
+    {
+        circle(rightWristX, rightWristY, 20);
+        song2.stop();
+        if(song1_status == false)
+        {
+            song1.play();
+            document.getElementById("song").innerHTML = "Playing Harry Potter Song";
+        }
+    }
 }
